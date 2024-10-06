@@ -32,3 +32,19 @@ app.post('/AddPoint', (req, res) => {
 app.get('/pointsList', (req, res) => {
     res.status(200).json(points);
 });
+app.post('/pointEdit/:idx', (req, res) => {
+    let idx=req.params.idx;
+    let point={};
+    point.id = req.body.id;
+    point.name=req.body.name;
+    point.description = req.body.description;
+    point.time = req.body.time;
+
+    points[idx]=point;
+
+    res.status(200).json("ok");
+});
+
+
+
+
