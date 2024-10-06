@@ -32,6 +32,12 @@ app.post('/AddPoint', (req, res) => {
 app.get('/pointsList', (req, res) => {
     res.status(200).json(points);
 });
+app.delete('/pointDelete', (req, res) => {
+    let idx=req.query.id;
+    points.splice(idx, 1);
+
+    res.status(200).json(points);
+})
 app.post('/pointEdit/:idx', (req, res) => {
     let idx=req.params.idx;
     let point={};
