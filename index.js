@@ -14,3 +14,9 @@ app.listen(port, () => {
     console.log(`Now listening on port http://localhost:${port}`);
 });
 
+//-----------------------------------------------------------------
+let points=[
+    {id:0, name:"עמל", description:"בית ספר"   ,time:"7:00"}
+]
+
+
