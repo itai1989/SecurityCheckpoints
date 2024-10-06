@@ -19,4 +19,6 @@ let points=[
     {id:0, name:"עמל", description:"בית ספר"   ,time:"7:00"}
 ]
 
-
+app.get('/pointsList', (req, res) => {
+    res.status(200).json(points);
+});
