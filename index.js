@@ -15,13 +15,10 @@ app.listen(port, () => {
 });
 
 //-----------------------------------------------------------------
-let points=[
-    {id: 0 , name:"עמל", description:"בית ספר" ,time:"7:00"}
-];
+let points=[];
 
 app.post('/AddPoint', (req, res) => {
     let point={};
-    point.id = req.body.id;
     point.name = req.body.name;
     point.description = req.body.description;
     point.time = req.body.time;
@@ -41,7 +38,6 @@ app.delete('/pointDelete', (req, res) => {
 app.post('/pointEdit/:idx', (req, res) => {
     let idx = req.params.idx;
     let point={};
-    point.id = req.body.id;
     point.name = req.body.name;
     point.description = req.body.description;
     point.time = req.body.time;
@@ -52,4 +48,8 @@ app.post('/pointEdit/:idx', (req, res) => {
 });
 app.get('/', (req, res) => {
     res.status(200).sendFile(path.join(__dirname,"/home.html"));
+});
+
+app.get('/checkIn', (req, res) => {
+    res.status(200).sendFile(path.join(__dirname,"/checkIn.html"));
 });
