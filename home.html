@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <style>
+      body {
+        direction: rtl;
+        background-color: bisque;
+      }
+      td,
+      th {
+        border: 1px solid black;
+      }
+      .GridContainer {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 10px;
+      }
+      .GridContainer label,
+      .GridContainer input {
+        display: block;
+      }
+      .GridContainer button,
+      .GridContainer h1 {
+        grid-column: 1 / span 2;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>רשימת נקודות השמירה</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>שם הנקודה</th>
+          <th>תיאור</th>
+        </tr>
+      </thead>
+      <tbody id="MainTable"></tbody>
+    </table>
+    <div class="GridContainer">
+      <h1>הוספת נקודת שמירה חדשה</h1>
+      <label for="pointName">שם</label>
+      <input type="text" id="pointName" />
+      <label for="pointDescription">תיאור</label>
+      <input type="text" id="pointDescription" />
+      <button onclick="AddPointToServer()">שמור</button>
+    </div>
+    <script>
+      let points = [];
+
+      async function GetPoints() {
+        let url = "/pointsList";
+        let response = await fetch(url);
+        let data = await response.json();
+        points = data;
+
+        FillTable();
+      }
+      function FillTable() {
+        let s = "";
+        for (let idx in points) {
+          s += "<tr>";
+          s += `<td>${points[idx].name}</td>`;
+          s += `<td>${points[idx].description}</td>`;
+          s += "</tr>";
+        }
+        document.getElementById("MainTable").innerHTML = s;
+      }
+      async function AddPointToServer() {
+        let Point = {};
+        Point.name = document.getElementById("pointName").value;
+        Point.description = document.getElementById("pointDescription").value;
+
+        let url = "/AddPoint";
+        let response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(Point),
+        });
+        let data = await response.json();
+        console.log(data);
+        GetPoints();
+      }
+      GetPoints();
+    </script>
+  </body>
+</html>
