@@ -43,6 +43,16 @@
       </thead>
       <tbody id="MainTable"></tbody>
     </table>
+    <h1>עריכת נקודות השמירה</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>שם הנקודה</th>
+          <th>תיאור</th>
+        </tr>
+      </thead>
+      <tbody id="MainTable2"></tbody>
+    </table>
     <div class="GridContainer">
       <h1>הוספת נקודת שמירה חדשה</h1>
       <label for="pointName">שם</label>
@@ -61,6 +71,7 @@
         points = data;
 
         FillTable();
+        FillUpdateTable();
       }
       function FillTable() {
         let s = "";
@@ -72,6 +83,17 @@
           s += "</tr>";
         }
         document.getElementById("MainTable").innerHTML = s;
+      }
+      function FillUpdateTable() {
+        let s = "";
+        for (let idx in points) {
+          s += "<tr>";
+          s += `<td><input id="pointName1" value="${points[idx].name}"/></td>`;
+          s += `<td><input id="pointDescription1" value="${points[idx].description}"/></td>`;
+          s += `<td><button onclick="UpdatePointToServer(${idx})">ערוך</button></td>`;
+          s += "</tr>";
+        }
+        document.getElementById("MainTable2").innerHTML = s;
       }
       async function AddPointToServer() {
         let Point = {};
@@ -95,6 +117,23 @@
         url += `?id=${line_id}`;
         let response = await fetch(url, {
           method: "DELETE",
+        });
+        let data = await response.json();
+        GetPoints();
+      }
+      async function UpdatePointToServer(line_id) {
+        let Point = {};
+        Point.name = document.getElementById("pointName1").value;
+        Point.description = document.getElementById("pointDescription1").value;
+
+        let url = "/pointEdit";
+        url += `/${line_id}`;
+        let response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(Point),
         });
         let data = await response.json();
         GetPoints();
