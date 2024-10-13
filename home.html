@@ -68,6 +68,7 @@
           s += "<tr>";
           s += `<td>${points[idx].name}</td>`;
           s += `<td>${points[idx].description}</td>`;
+          s += `<td><button onclick="DeletePointFromServer(${idx})">מחק</button></td>`;
           s += "</tr>";
         }
         document.getElementById("MainTable").innerHTML = s;
@@ -87,6 +88,15 @@
         });
         let data = await response.json();
         console.log(data);
+        GetPoints();
+      }
+      async function DeletePointFromServer(line_id) {
+        let url = "/pointDelete";
+        url += `?id=${line_id}`;
+        let response = await fetch(url, {
+          method: "DELETE",
+        });
+        let data = await response.json();
         GetPoints();
       }
       GetPoints();
