@@ -34,6 +34,58 @@
     </table>
 
     <script>
+      let points = [];
+
+      async function GetPoints() {
+        let url = "/pointsList";
+        let response = await fetch(url);
+        let data = await response.json();
+        points = data;
+
+        FillTable();
+      }
+      function FillTable() {
+        let s = "";
+        for (let idx in points) {
+          s += "<tr>";
+          s += `<td>${points[idx].name}</td>`;
+          s += `<td>${points[idx].description}</td>`;
+          s += `<td>${points[idx].time}</td>`;
+          s += `<td><button onclick="AddTimeToPoint(${idx})">הוסף זמן ביקור</button></td>`;
+          s += "</tr>";
+        }
+        document.getElementById("MainTable").innerHTML = s;
+      }
+
+      async function AddTimeToPoint(line_id) {
+        const now = new Date();
+        const formattedDate = now.toLocaleString('he-IL', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: false
+        });
+        let Point = {};
+        Point.name = points[line_id].name;
+        Point.description = points[line_id].description;
+        Point.time = formattedDate;
+
+        let url = "/pointEdit";
+        url += `/${line_id}`;
+        let response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(Point),
+        });
+        let data = await response.json();
+        GetPoints();
+      }
+      GetPoints();
     </script>
   </body>
 </html>
