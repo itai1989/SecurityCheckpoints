@@ -17,33 +17,23 @@
       th {
         border: 1px solid black;
       }
-      .GridContainer {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        grid-gap: 10px;
-      }
-      .GridContainer label,
-      .GridContainer input {
-        display: block;
-      }
-      .GridContainer button,
-      .GridContainer h1 {
-        grid-column: 1 / span 2;
-      }
     </style>
   </head>
   <body>
-    <h1>רשימת נקודות השמירה</h1>
+    <h1>דף ניהול נקודות השמירה</h1>
+    <h2>רשימת נקודות השמירה</h2>
     <table>
       <thead>
         <tr>
           <th>שם הנקודה</th>
           <th>תיאור</th>
+          <th>זמן ביקור</th>
         </tr>
       </thead>
       <tbody id="MainTable"></tbody>
     </table>
-    <h1>עריכת נקודות השמירה</h1>
+    <hr />
+    <h2>עריכת נקודות השמירה</h2>
     <table>
       <thead>
         <tr>
@@ -53,8 +43,9 @@
       </thead>
       <tbody id="MainTable2"></tbody>
     </table>
-    <div class="GridContainer">
-      <h1>הוספת נקודת שמירה חדשה</h1>
+    <hr />
+    <div>
+      <h2>הוספת נקודת שמירה חדשה</h2>
       <label for="pointName">שם</label>
       <input type="text" id="pointName" />
       <label for="pointDescription">תיאור</label>
@@ -69,6 +60,7 @@
         let response = await fetch(url);
         let data = await response.json();
         points = data;
+        console.log(data);
 
         FillTable();
         FillUpdateTable();
@@ -79,6 +71,7 @@
           s += "<tr>";
           s += `<td>${points[idx].name}</td>`;
           s += `<td>${points[idx].description}</td>`;
+          s += `<td>${points[idx].time}</td>`;
           s += `<td><button onclick="DeletePointFromServer(${idx})">מחק</button></td>`;
           s += "</tr>";
         }
@@ -88,8 +81,8 @@
         let s = "";
         for (let idx in points) {
           s += "<tr>";
-          s += `<td><input id="pointName1" value="${points[idx].name}"/></td>`;
-          s += `<td><input id="pointDescription1" value="${points[idx].description}"/></td>`;
+          s += `<td><input class="pointName" value="${points[idx].name}"/></td>`;
+          s += `<td><input class="pointDescription" value="${points[idx].description}"/></td>`;
           s += `<td><button onclick="UpdatePointToServer(${idx})">ערוך</button></td>`;
           s += "</tr>";
         }
@@ -123,9 +116,13 @@
       }
       async function UpdatePointToServer(line_id) {
         let Point = {};
-        Point.name = document.getElementById("pointName1").value;
-        Point.description = document.getElementById("pointDescription1").value;
-
+        Point.name = document.getElementsByClassName("pointName")[line_id].value;
+        Point.description = document.getElementsByClassName("pointDescription")[line_id].value;
+        if(points[line_id].time){
+          Point.time = points[line_id].time;
+        }
+        console.log(Point);
+        
         let url = "/pointEdit";
         url += `/${line_id}`;
         let response = await fetch(url, {
